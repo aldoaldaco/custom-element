@@ -46,9 +46,9 @@
                 text-align: center;
             }
         </style>
-        <paper-dialog id="colors" class="form-dialog" modal="true" openned="false" on-show-message="open">
+        <paper-dialog id="colors" class="form-dialog" modal="true" openned="false">
             <h2>Contacto Almacenado</h2>
-            <p>El contacto ha sido almacenado en su libreta</p>
+            <p>El contacto [[newUser]] ha sido almacenado en su libreta </p>
         </paper-dialog>
         <h2 class="header-form">[[header]] [[fullName]] !</h2>
         <div class="body-form">
@@ -113,10 +113,6 @@
                     }));
                 }
 
-                console(event) {
-                    console.log(event.detail);
-                }
-
                 createFullName(first, last) {
                     return `${first} ${last}`;
                 }
@@ -129,11 +125,16 @@
                 connectedCallback() {
                     super.connectedCallback();
                     console.log("connected callback");
+                    this.addEventListener('show-message', (event) => {
+                        this.set('newUser', event.detail.user);
+                        this.$.colors.open();
+                    });
                 }
 
                 disconnectedCallback() {
                     super.disconnectedCallback();
                     console.log("dis connected callback");
+                    this.removeEventListener('show-message');
                 }
             }
             customElements.define(CustomElement.is, CustomElement);
