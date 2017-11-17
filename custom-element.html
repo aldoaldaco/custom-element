@@ -1,0 +1,144 @@
+<link rel="import" href="../polymer/polymer-element.html">
+
+
+<link rel="import" href="../paper-input/paper-input.html">
+<link rel="import" href="../paper-button/paper-button.html">
+<link rel="import" href="../paper-dialog/paper-dialog.html">
+
+<dom-module id="custom-element">
+    <template>
+        <style>
+            :host {
+                /*font-family: sans-serif;
+                display: block;
+                border: 1px solid;
+                height: auto;*/
+            }
+
+            .header-form {
+                color: var(--color-header-form, green);
+                font-size: var(--font-size-header-form, 20px);
+                @apply --header-form-mixin;
+            }
+
+            .save-button {
+                margin: 0 auto;
+                color: white;
+                background-color: black;
+            }
+
+            .body-form {
+                display: flex;
+                flex-direction: column;
+                /* Background color of form */
+                --paper-dynamic-forms-bg-color: #f3f3f3;
+                /* Label and underline color when the input is not focused */
+                --paper-input-container-color: black;
+                /* Label and underline color when the input is focused */
+                --paper-input-container-focus-color: black;
+            }
+
+            .form-dialog {
+                border: 2px solid;
+                border-color: #4caf50;
+                background-color: #f1f8e9;
+                color: #4caf50;
+                text-align: center;
+            }
+        </style>
+        <paper-dialog id="colors" class="form-dialog" modal="true" openned="false" on-show-message="open">
+            <h2>Contacto Almacenado</h2>
+            <p>El contacto ha sido almacenado en su libreta</p>
+        </paper-dialog>
+        <h2 class="header-form">[[header]] [[fullName]] !</h2>
+        <div class="body-form">
+            <paper-input id="fn" label="Nombre" value="{{first}}"></paper-input>
+            <paper-input id="ln" label="Apellido" value="{{last}}"></paper-input>
+            <paper-button raised class="save-button" on-tap="saveInfo">Guardar</paper-button>
+        </div>
+    </template>
+    <script>
+        (function definitionCustomElement(customElements){
+            'use strict';
+            class CustomElement extends Polymer.Element {
+                static get is() {
+                    return 'custom-element';
+                }
+
+                static get properties() {
+                    return {
+                        header: {
+                            type: String,
+                            value: 'Hola'
+                        },
+                        first: {
+                            type: String,
+                            value: '',
+                            observer: 'checkFirstName'
+                        },
+                        last: {
+                            type: String,
+                            value: '',
+                            observer: 'checkLastName'
+                        },
+                        fullName: {
+                            type: String,
+                            value: '',
+                            notify: true,
+                            computed: 'createFullName(first, last)'
+                        }
+                    };
+                }
+
+                constructor() {
+                    super();
+                    console.log("constructor");
+                }
+
+                checkFirstName() {
+                    console.log(this.first);
+                }
+
+                checkLastName() {
+                    console.log(this.last);
+                }
+
+                saveInfo() {
+                    this.dispatchEvent(new CustomEvent('show-message', {
+                        bubbles: true,
+                        composed: true,
+                        detail: {
+                            user: this.fullName
+                        }
+                    }));
+                }
+
+                console(event) {
+                    console.log(event.detail);
+                }
+
+                createFullName(first, last) {
+                    return `${first} ${last}`;
+                }
+
+                ready() {
+                    super.ready();
+                    console.log("ready");
+                }
+
+                connectedCallback() {
+                    super.connectedCallback();
+                    console.log("connected callback");
+                }
+
+                disconnectedCallback() {
+                    super.disconnectedCallback();
+                    console.log("dis connected callback");
+                }
+            }
+            customElements.define(CustomElement.is, CustomElement);
+        })(window.customElements);
+    </script>
+
+</dom-module>
+
